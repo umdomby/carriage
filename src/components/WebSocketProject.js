@@ -1,8 +1,8 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Context} from "../index";
 import {Button} from "react-bootstrap";
 
-const WebSocketProject = (props) => {
+const WebSocketProject = () => {
 
     const {device} = useContext(Context)
     const [messagesUpDown, setMessagesUpDown] = useState('');
@@ -11,6 +11,11 @@ const WebSocketProject = (props) => {
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [hideConnect, setHideConnect] = useState(false);
     const [renderUsername, setRenderUsername] = useState('');
+
+
+    useEffect(()=>{
+        wsConnect('user')
+    },[])
 
 
     const connect = () => {
@@ -92,17 +97,6 @@ const WebSocketProject = (props) => {
         }
     }
 
-    const sendUpDown = () => {
-        device.webSocket.send(JSON.stringify({
-            method: 'messages',
-            id: '1',
-            date: Date.now(),
-            username: device.username,
-            message2: messagesUpDown,
-        }))
-        setMessagesUpDown('0')
-    }
-
     const sendUpDownLeftRight = () => {
         device.webSocket.send(JSON.stringify({
             method: 'messages',
@@ -160,7 +154,6 @@ const WebSocketProject = (props) => {
                    }}
             />
             <Button onClick={sendUpDownLeftRight}>GO</Button>
-
 
 
             {device.connected ?

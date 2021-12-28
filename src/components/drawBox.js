@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {ControlDevice} from "../Control/controlDevice";
 
 class DrawBox extends Component {
   constructor(props) {
@@ -33,6 +34,21 @@ class DrawBox extends Component {
       }
     }
   };
+
+  setDrive(data){
+    switch (data) {
+      case 'up':
+        return <ControlDevice route={'UpDown'} data={'1'}/>
+      case 'down':
+        return <ControlDevice route={'UpDown'} data={'-1'}/>
+      case 'left':
+        return <ControlDevice route={'LeftRight'} data={'-1'}/>
+      case 'right':
+        return <ControlDevice route={'LeftRight'} data={'1'}/>
+      case 'stop':
+        return <ControlDevice route={'Stop'} data={'0'}/>
+    }
+  }
 
   render() {
     const { imageWidth, boxColor } = this.props;
@@ -75,6 +91,10 @@ class DrawBox extends Component {
                   }}
                 >
                   {match[i]._label}
+                  {this.setDrive(match[i]._label)}
+
+                  {/*<ControlDevice data={match[i]._label}/>*/}
+
                 </p>
               ) : null}
             </div>

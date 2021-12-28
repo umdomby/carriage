@@ -2,19 +2,16 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { useSpeechSynthesis } from 'react-speech-kit';
 import {Context} from "../index";
-
+import {UpDown, Stop, LeftRight} from '../Control/control'
 
 const Dictaphone33 = () => {
 
     const {device} = useContext(Context)
     const [loadingSpeechRecognition, setLoadingSpeechRecognition] = useState(true);
-    const [message, setMessage] = useState('')
-    const [messages2, setMessages2] = useState('');
-    const nameField = useRef(null);
     const [oldText, setOldText] = useState(null);
     const [oldText2, setOldText2] = useState(null);
     const { speak } = useSpeechSynthesis();
-    const [voice, setVoice] = useState(false);
+    const [voice, setVoice] = useState(true);
 
     const commands = [
         {
@@ -34,7 +31,6 @@ const Dictaphone33 = () => {
         browserSupportsSpeechRecognition
     } = useSpeechRecognition({commands});
 
-
     const startListening = () => SpeechRecognition.startListening({
         continuous: true,
         language: 'ru-RU'
@@ -53,61 +49,31 @@ const Dictaphone33 = () => {
             continuous: true,
             language: 'ru-RU'
         });
-
-        // setTimeout(() => {
-        //     startListening()
-        // },1000);
     }
-
 
     useEffect(() => {
         // setMessages2(prev => [transcript, ...prev])
-        //var text = transcript.toString().toLowerCase()
-
         if(transcript.toString().toLowerCase().includes(oldText) || transcript.toString().toLowerCase().includes(oldText2)){
             resetTranscript()
             setOldText(null)
             setOldText2(null)
-            console.log("88888888888888")
         }else {
-            console.log("99999999999999")
             speech(transcript.toString().toLowerCase())
         }
-        // speech(text)
         console.log(transcript.toString().toLowerCase() + "   ---   " + oldText)
-
         if (transcript.toString().length > 100) {
             resetTranscript()
         }
-
     }, [transcript]);
 
-    const sendMessage2 = (data, data2) => {
-        device.webSocket.send(JSON.stringify({
-            method: 'messages',
-            id: '1',
-            date: Date.now(),
-            message2: data,
-        }))
-    }
-    const sendMessage = (data) => {
-        device.webSocket.send(JSON.stringify({
-            method: 'messages',
-            id: '1',
-            date: Date.now(),
-            message: data,
-        }))
-    }
 
     const speech = (text) => {
-
         if(text.includes("голос включить") || text.includes("голос включить")){
             speak({ text: "голос включен"})
             setOldText('голос включен')
             setVoice(true)
             resetTranscript()
         }
-
         if(text.includes("голос отключить") || text.includes("голос выключить")){
             speak({ text: "голос выключен"})
             setOldText('голос выключен')
@@ -123,7 +89,6 @@ const Dictaphone33 = () => {
                 speak({text: "Спасибо у меня всё хорошо"})
                 resetTranscript()
             }
-
             if (text.includes('что делаешь')) {
                 speak({text: "Веду развитие собственного искуственного интелекта"})
                 resetTranscript()
@@ -142,32 +107,31 @@ const Dictaphone33 = () => {
                 speak({text: "вперёд"})
                 setOldText('перёд')
                 setOldText2('перед')
-                sendMessage2('1')
+                UpDown(device.webSocket, '-1')
                 resetTranscript()
             }
             if (text.includes("назад")) {
                 speak({text: "назад"})
                 setOldText('назад')
-                sendMessage2('-1')
+                UpDown(device.webSocket, '1')
                 resetTranscript()
             }
             if (text.includes("лево") || text.includes("лева") || text.includes("лего") || text.includes("лёва")) {
                 speak({text: "влево"})
+                LeftRight(device.webSocket, '-1')
                 setOldText('лев')
-                sendMessage('1')
                 resetTranscript()
             }
             if (text.includes("права") || text.includes("право") || text.includes("справо") || text.includes("справа") || text.includes("трава")) {
                 speak({text: "вправа"})
                 setOldText('прав')
-                sendMessage('-1')
+                LeftRight(device.webSocket, '1')
                 resetTranscript()
             }
             if (text.includes("стоп") || text.includes("стоп")) {
                 speak({text: "стоп"})
                 setOldText('сто')
-                sendMessage('0')
-                sendMessage2('0')
+                Stop(device.webSocket)
                 resetTranscript()
             }
             if (text.includes("закрыть")) {
@@ -180,14 +144,8 @@ const Dictaphone33 = () => {
                 window.open('https://rezka.ag/', "_blank")
                 resetTranscript()
             }
-            if (text.includes("кто твой хозяин")) {
-                speak({text: "мой хозяин"})
-                setOldText('хозяин')
-                resetTranscript()
-            }
             if (text.includes("знаешь") && text.includes("павлову")) {
                 speak({text: "какую именно? Павлову или Падлову?"})
-                setOldText('хозяин')
                 resetTranscript()
             }
         }
