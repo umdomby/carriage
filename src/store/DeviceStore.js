@@ -8,7 +8,8 @@ export default class DeviceStore {
         this._connected = false
         this._close = true
         this._faceControl = false
-        this._accel = '1'
+        this._accel = 1
+        this._speed = 0
         makeAutoObservable(this)
     }
 
@@ -59,5 +60,14 @@ export default class DeviceStore {
     setAccel(value) {
         this._accel = value;
     }
+
+    get speed() {
+        return this._speed;
+    }
+
+    setSpeed(value) {
+        this._speed = value;
+    }
+
 
 }

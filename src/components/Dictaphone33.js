@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { useSpeechSynthesis } from 'react-speech-kit';
 import {Context} from "../index";
-import {UpDown, Stop, LeftRight, Accel} from '../Control/controlVoceButton'
+import {UpDown, Stop, LeftRight} from '../Control/controlVoceButton'
 import {Button} from "react-bootstrap";
 
 const Dictaphone33 = () => {
@@ -15,6 +15,7 @@ const Dictaphone33 = () => {
     const [voice, setVoice] = useState(true);
     const [face, setFace] = useState(false);
     const [accelState, setAccelState] = useState(1)
+    const [speedState, setSpeedState] = useState(0)
 
     const commands = [
         {
@@ -171,39 +172,50 @@ const Dictaphone33 = () => {
     }
 
     const controlUp = () => {
-        UpDown(device.webSocket, '-1', device.accel)
+        UpDown(device.webSocket, -1 + device.speed/10, device.accel)
     }
     const controlDown = () => {
-        UpDown(device.webSocket, '1', device.accel)
+        UpDown(device.webSocket, 1 - device.speed/10, device.accel)
     }
     const controlLeft = () => {
-        LeftRight(device.webSocket, '-1', device.accel)
+        LeftRight(device.webSocket, -1 + device.speed/10, device.accel)
     }
     const controlRight = () => {
-        LeftRight(device.webSocket, '1', device.accel)
+        LeftRight(device.webSocket, 1 - device.speed/10, device.accel)
     }
     const controlStop = () => {
         Stop(device.webSocket, 1)
     }
+
     const accelPlus = () => {
         if(accelState < 10){
         accelUse(accelState + 1)}
     }
     const accelMinus = () => {
-
         if(accelState > 1){
         accelUse(accelState - 1)}
     }
     const accelUse = (accel) => {
-        //device.setAcceleration(accel)
         setAccelState(accel)
         device.setAccel(accel)
-        //Accel(device.webSocket, accel)
+    }
+
+    // const speedPlus = () => {
+    //     speedUse(speedState + 0.1)
+    // }
+    // const speedMinus = () => {
+    //     if(speedState > 0){
+    //         speedUse(speedState - 0.1)}
+    // }
+
+    const speedUse = (speed) => {
+        setSpeedState(speed)
+        device.setSpeed(Number(speed))
     }
 
     return (
         <div>
-            <p>Microphone: {listening ? 'on' : 'off'}</p>
+            <div style={{margin: 3}}>Microphone: {listening ? 'on' : 'off'}</div>
             <div>
                 {/*<button onClick={loadSpeechRecognition}>Start</button>*/}
                 <button onClick={startListening}>Start</button>
@@ -220,9 +232,10 @@ const Dictaphone33 = () => {
                 <button onClick={controlRight}>RIGHT</button>
                 <button onClick={controlStop}>STOP</button>
             </div>
-            <div>
+            <div style={{marginTop: 4}}>
                 <Button style={{marginRight : 3, width: 50}} onClick={accelPlus}> + </Button>
-                <label style={{width: 33}}>{accelState}</label>
+                <label>{accelState}</label>
+
                 {/*<input type="text"*/}
                 {/*       style={{backgroundColor: 'transparent', textAlign: 'center', borderWidth: 1, width: 50, fontSize: 16, marginTop: 4}}*/}
                 {/*       value={accelState}*/}
@@ -239,7 +252,30 @@ const Dictaphone33 = () => {
                 {/*           }*/}
                 {/*       }}*/}
                 {/*/>*/}
-                <Button style={{marginLeft : 3, width: 50}} onClick={accelMinus}> - </Button>
+                <Button style={{marginLeft : 3, width: 50, marginRight: 5}} onClick={accelMinus}> - </Button>
+                замедление
+            </div>
+            <div>
+                {/*<Button style={{marginRight : 3, width: 50}} onClick={speedPlus}> + </Button>*/}
+                {/*<label>{speedState}</label>*/}
+                <input type='number'
+                       step="1"
+                       min='0'
+                       max='10'
+                       style={{backgroundColor: 'transparent', textAlign: 'center', borderWidth: 1, width: 50, fontSize: 16, marginTop: 4, marginRight: 5}}
+                       value={speedState}
+                       onChange={(event) => {
+                           // setSpeedState(event.target.value)
+                           speedUse(event.target.value)
+                       }}
+                       onKeyPress={event => {
+                           if (event.key === "Enter") {
+                               //return sendUpDownLeftRight()
+                           }
+                       }}
+                />
+                {/*<Button style={{marginLeft : 3, width: 50, marginRight: 5}} onClick={speedMinus}> - </Button>*/}
+                отнять делений
             </div>
             <div>{transcript}</div>
         </div>

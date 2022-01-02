@@ -1,22 +1,22 @@
 
 
-export const LeftRight = (webSocket, data, accel) => {
+export const LeftRight = (webSocket, speed, accel) => {
     webSocket.send(JSON.stringify({
         method: 'messages',
         id: '1',
         date: Date.now(),
-        message: data,
+        message: speed,
         accel: accel,
         stop: 0
     }))
 }
 
-export const UpDown = (webSocket, data, accel) => {
+export const UpDown = (webSocket, speed, accel) => {
     webSocket.send(JSON.stringify({
         method: 'messages',
         id: '1',
         date: Date.now(),
-        message2: data,
+        message2: speed,
         accel: accel,
         stop: 0
     }))

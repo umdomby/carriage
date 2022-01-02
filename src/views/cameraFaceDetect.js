@@ -51,7 +51,7 @@ class CameraFaceDetect extends Component {
   startCapture = () => {
     this.interval = setInterval(() => {
       this.capture();
-    }, 1500);
+    }, 800);
   };
 
   componentWillUnmount() {
