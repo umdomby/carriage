@@ -6,7 +6,8 @@ export const LeftRight = (webSocket, data, accel) => {
         id: '1',
         date: Date.now(),
         message: data,
-        accel: accel
+        accel: accel,
+        stop: 0
     }))
 }
 
@@ -16,7 +17,8 @@ export const UpDown = (webSocket, data, accel) => {
         id: '1',
         date: Date.now(),
         message2: data,
-        accel: accel
+        accel: accel,
+        stop: 0
     }))
 }
 
@@ -25,9 +27,10 @@ export const Stop = (webSocket, accel) => {
         method: 'messages',
         id: '1',
         date: Date.now(),
-        message: '0',
-        message2: '0',
-        accel: accel
+        message: 0,
+        message2: 0,
+        accel: accel,
+        stop: 1
 
     }))
 }
