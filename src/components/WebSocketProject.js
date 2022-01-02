@@ -9,39 +9,41 @@ const WebSocketProject = () => {
     const [messagesLeftRight, setMessagesLeftRight] = useState('');
     const [messagesMongo, setMessagesMongo] = useState([]);
     const [onlineUsers, setOnlineUsers] = useState([]);
-    const [hideConnect, setHideConnect] = useState(false);
-    const [renderUsername, setRenderUsername] = useState('');
+
+    // const [hideConnect, setHideConnect] = useState(false);
+    // const [renderUsername, setRenderUsername] = useState('');
 
 
     useEffect(()=>{
         wsConnect('user')
+        setInterval(() => socketTest(), 5000)
     },[])
 
 
-    const connect = () => {
-        wsConnect(device.username)
-        device.setClose(false)
-        device.setConnected(true)
-        setHideConnect(true)
-        setInterval(() => socketTest(), 5000)
-    }
-
-    const close = () => {
-        try {
-            device.webSocket.send(JSON.stringify({
-                method: 'close',
-                id: '1',
-                username: device.username,
-            }))
-            device.webSocket.close()
-            device.setConnected(false)
-            console.log('WebSocket close')
-            setHideConnect(false)
-            device.setClose(true)
-        }catch (e) {
-            console.log('close: ' + e)
-        }
-    }
+    // const connect = () => {
+    //     wsConnect(device.username)
+    //     device.setClose(false)
+    //     device.setConnected(true)
+    //     setHideConnect(true)
+    //     setInterval(() => socketTest(), 5000)
+    // }
+    //
+    // const close = () => {
+    //     try {
+    //         device.webSocket.send(JSON.stringify({
+    //             method: 'close',
+    //             id: '1',
+    //             username: device.username,
+    //         }))
+    //         device.webSocket.close()
+    //         device.setConnected(false)
+    //         console.log('WebSocket close')
+    //         setHideConnect(false)
+    //         device.setClose(true)
+    //     }catch (e) {
+    //         console.log('close: ' + e)
+    //     }
+    // }
 
     const wsConnect = (username) => {
         try {
@@ -97,63 +99,63 @@ const WebSocketProject = () => {
         }
     }
 
-    const sendUpDownLeftRight = () => {
-        device.webSocket.send(JSON.stringify({
-            method: 'messages',
-            id: '1',
-            date: Date.now(),
-            username: device.username,
-            message2: messagesUpDown,
-            message: messagesLeftRight,
-        }))
-        setMessagesUpDown('')
-        setMessagesLeftRight('')
-    }
+    // const sendUpDownLeftRight = () => {
+    //     device.webSocket.send(JSON.stringify({
+    //         method: 'messages',
+    //         id: '1',
+    //         date: Date.now(),
+    //         username: device.username,
+    //         message2: messagesUpDown,
+    //         message: messagesLeftRight,
+    //     }))
+    //     setMessagesUpDown('')
+    //     setMessagesLeftRight('')
+    // }
 
     return (
         <div>
-            <div className='m-2'>
-                <input type="text"
-                   disabled={hideConnect}
-                   style={{backgroundColor: 'transparent', textAlign: 'left', borderWidth: 1, width: 350,fontSize: 24}}
-                   onChange={(e) => {
-                       device.setUsername(e.target.value)
-                       setRenderUsername(e.target.value)
-                   }}
-                   onKeyPress={event => {
-                       if (event.key === "Enter") {
-                           return connect()
-                       }
-                   }}
-                />
-                <Button disabled={hideConnect || renderUsername.length < 3} onClick={connect}>Connected</Button>
-                <Button onClick={close} disabled={device.close}>Close</Button>
-            </div>
+            {/*<div className='m-2'>*/}
+            {/*    <input type="text"*/}
+            {/*       disabled={hideConnect}*/}
+            {/*       style={{backgroundColor: 'transparent', textAlign: 'left', borderWidth: 1, width: 350,fontSize: 24}}*/}
+            {/*       onChange={(e) => {*/}
+            {/*           device.setUsername(e.target.value)*/}
+            {/*           setRenderUsername(e.target.value)*/}
+            {/*       }}*/}
+            {/*       onKeyPress={event => {*/}
+            {/*           if (event.key === "Enter") {*/}
+            {/*               return connect()*/}
+            {/*           }*/}
+            {/*       }}*/}
+            {/*    />*/}
+            {/*    <Button disabled={hideConnect || renderUsername.length < 3} onClick={connect}>Connected</Button>*/}
+            {/*    <Button onClick={close} disabled={device.close}>Close</Button>*/}
+            {/*</div>*/}
 
-            <input type="text" className="mb-5"
-                style={{backgroundColor: 'transparent', textAlign: 'left', borderWidth: 1, width: 350,fontSize: 24}}
-                value={messagesUpDown}
-                onChange={(event) => setMessagesUpDown(event.target.value)}
-                onKeyPress={event => {
-                    if (event.key === "Enter") {
-                       return sendUpDownLeftRight()
-                    }
-                }}
-            />
-            {/*<Button onClick={sendUpDown}>вперёд-назад</Button>*/}
+            {/*<input type="text" className="mb-5"*/}
+            {/*    style={{backgroundColor: 'transparent', textAlign: 'left', borderWidth: 1, width: 350,fontSize: 24}}*/}
+            {/*    value={messagesUpDown}*/}
+            {/*    onChange={(event) => setMessagesUpDown(event.target.value)}*/}
+            {/*    onKeyPress={event => {*/}
+            {/*        if (event.key === "Enter") {*/}
+            {/*           return sendUpDownLeftRight()*/}
+            {/*        }*/}
+            {/*    }}*/}
+            {/*/>*/}
+            {/*/!*<Button onClick={sendUpDown}>вперёд-назад</Button>*!/*/}
 
 
-            <input type="text" className="mb-5"
-                   style={{backgroundColor: 'transparent', textAlign: 'left', borderWidth: 1, width: 350,fontSize: 24}}
-                   value={messagesLeftRight}
-                   onChange={(event) => setMessagesLeftRight(event.target.value)}
-                   onKeyPress={event => {
-                       if (event.key === "Enter") {
-                           return sendUpDownLeftRight()
-                       }
-                   }}
-            />
-            <Button onClick={sendUpDownLeftRight}>GO</Button>
+            {/*<input type="text" className="mb-5"*/}
+            {/*       style={{backgroundColor: 'transparent', textAlign: 'left', borderWidth: 1, width: 350,fontSize: 24}}*/}
+            {/*       value={messagesLeftRight}*/}
+            {/*       onChange={(event) => setMessagesLeftRight(event.target.value)}*/}
+            {/*       onKeyPress={event => {*/}
+            {/*           if (event.key === "Enter") {*/}
+            {/*               return sendUpDownLeftRight()*/}
+            {/*           }*/}
+            {/*       }}*/}
+            {/*/>*/}
+            {/*<Button onClick={sendUpDownLeftRight}>GO</Button>*/}
 
 
             {device.connected ?

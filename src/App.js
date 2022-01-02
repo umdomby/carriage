@@ -8,9 +8,9 @@ import CameraFaceDetect from "./views/cameraFaceDetect";
 const App = observer(() => {
     return (
         <div style={{textAlign:'center'}}>
+            <CameraFaceDetect/>
             <WebSocketProject/>
             <Dictaphone33/>
-            <CameraFaceDetect/>
         </div>
     );
 });

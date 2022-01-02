@@ -2,7 +2,8 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { useSpeechSynthesis } from 'react-speech-kit';
 import {Context} from "../index";
-import {UpDown, Stop, LeftRight} from '../Control/control'
+import {UpDown, Stop, LeftRight, Accel} from '../Control/controlVoceButton'
+import {Button} from "react-bootstrap";
 
 const Dictaphone33 = () => {
 
@@ -12,6 +13,8 @@ const Dictaphone33 = () => {
     const [oldText2, setOldText2] = useState(null);
     const { speak } = useSpeechSynthesis();
     const [voice, setVoice] = useState(true);
+    const [face, setFace] = useState(false);
+    const [accelState, setAccelState] = useState(1)
 
     const commands = [
         {
@@ -19,7 +22,7 @@ const Dictaphone33 = () => {
             callback: () => console.log('Привет 2222')
         },
         {
-            command: 'Очистить.',
+            command: 'очистить',
             callback: ({ resetTranscript }) => resetTranscript()
         },
     ]
@@ -39,7 +42,6 @@ const Dictaphone33 = () => {
     const stopListening = () => SpeechRecognition.stopListening();
 
     useEffect(() => {
-        console.log("22222222222222222")
         loadSpeechRecognition();
     }, []);
 
@@ -66,9 +68,8 @@ const Dictaphone33 = () => {
         }
     }, [transcript]);
 
-
     const speech = (text) => {
-        if(text.includes("голос включить") || text.includes("голос включить")){
+        if(text.includes("голос включить")){
             speak({ text: "голос включен"})
             setOldText('голос включен')
             setVoice(true)
@@ -80,58 +81,70 @@ const Dictaphone33 = () => {
             setVoice(false)
             resetTranscript()
         }
+        if(text.includes("мимика включить")){
+            speak({ text: "мимика включена"})
+            setOldText('мимика включена')
+            setFace(true)
+            device.setFaceControl(true)
+            resetTranscript()
+        }
+        if(text.includes("мимика отключить") || text.includes("мимика выключить")){
+            speak({ text: "мимика выключена"})
+            setOldText('мимика выключена')
+            setFace(false)
+            device.setFaceControl(false)
+            resetTranscript()
+        }
+        if(text.includes("всё включить")){
+            speak({ text: "мимика и голос включены"})
+            setOldText('мимика и голос включены')
+            setVoice(true)
+            setFace(true)
+            device.setFaceControl(true)
+            resetTranscript()
+        }
+        if(text.includes("всё выключить")){
+            speak({ text: "мимика и голос выключены"})
+            setOldText('мимика и голос выключены')
+            setVoice(false)
+            setFace(false)
+            device.setFaceControl(false)
+            resetTranscript()
+        }
         if(voice) {
             if (text.includes("вики") || text.includes("микки") || text.includes("витя")) {
                 speak({text: "да, Сергей."})
-                resetTranscript()
-            }
-            if (text.includes("как дела")) {
-                speak({text: "Спасибо у меня всё хорошо"})
-                resetTranscript()
-            }
-            if (text.includes('что делаешь')) {
-                speak({text: "Веду развитие собственного искуственного интелекта"})
-                resetTranscript()
-            }
-            if (text.includes("режим образовани")) {
-                speak({text: "режим образования включён"})
-                setOldText('режим образовани')
-                resetTranscript()
-            }
-            if (text.includes("режим вкладки")) {
-                speak({text: "режим вкладки включён"})
-                setOldText('режим вкладки')
                 resetTranscript()
             }
             if (text.includes("перед") || text.includes("перёд")) {
                 speak({text: "вперёд"})
                 setOldText('перёд')
                 setOldText2('перед')
-                UpDown(device.webSocket, '-1')
+                controlUp()
                 resetTranscript()
             }
             if (text.includes("назад")) {
                 speak({text: "назад"})
                 setOldText('назад')
-                UpDown(device.webSocket, '1')
+                controlDown()
                 resetTranscript()
             }
             if (text.includes("лево") || text.includes("лева") || text.includes("лего") || text.includes("лёва")) {
                 speak({text: "влево"})
-                LeftRight(device.webSocket, '-1')
+                controlLeft()
                 setOldText('лев')
                 resetTranscript()
             }
             if (text.includes("права") || text.includes("право") || text.includes("справо") || text.includes("справа") || text.includes("трава")) {
                 speak({text: "вправа"})
                 setOldText('прав')
-                LeftRight(device.webSocket, '1')
+                controlRight()
                 resetTranscript()
             }
             if (text.includes("стоп") || text.includes("стоп")) {
                 speak({text: "стоп"})
                 setOldText('сто')
-                Stop(device.webSocket)
+                controlStop()
                 resetTranscript()
             }
             if (text.includes("закрыть")) {
@@ -144,30 +157,90 @@ const Dictaphone33 = () => {
                 window.open('https://rezka.ag/', "_blank")
                 resetTranscript()
             }
-            if (text.includes("знаешь") && text.includes("павлову")) {
-                speak({text: "какую именно? Павлову или Падлову?"})
-                resetTranscript()
-            }
         }
     }
-
     if (loadingSpeechRecognition || !browserSupportsSpeechRecognition) {
         return null;
     }
-
     const voiceButton = () => {
         setVoice(!voice)
+    }
+    const faceButton = () => {
+        device.setFaceControl(!device.faceControl)
+        setFace(!face)
+    }
+
+    const controlUp = () => {
+        UpDown(device.webSocket, '-1', device.accel)
+    }
+    const controlDown = () => {
+        UpDown(device.webSocket, '1', device.accel)
+    }
+    const controlLeft = () => {
+        LeftRight(device.webSocket, '-1', device.accel)
+    }
+    const controlRight = () => {
+        LeftRight(device.webSocket, '1', device.accel)
+    }
+    const controlStop = () => {
+        Stop(device.webSocket, 1)
+    }
+    const accelPlus = () => {
+        if(accelState < 10){
+        accelUse(accelState + 1)}
+    }
+    const accelMinus = () => {
+
+        if(accelState > 1){
+        accelUse(accelState - 1)}
+    }
+    const accelUse = (accel) => {
+        //device.setAcceleration(accel)
+        setAccelState(accel)
+        device.setAccel(accel)
+        //Accel(device.webSocket, accel)
     }
 
     return (
         <div>
             <p>Microphone: {listening ? 'on' : 'off'}</p>
-            {/*<button onClick={loadSpeechRecognition}>Start</button>*/}
-            <button onClick={startListening}>Start</button>
-            <button onClick={SpeechRecognition.stopListening}>Stop</button>
-            <button onClick={resetTranscript}>Reset</button>
-            <button style={{backgroundColor: voice ? 'green' : 'red'}} onClick={voiceButton}>голос</button>
-            {/*<button onClick={scrollMassive}>Reset</button>*/}
+            <div>
+                {/*<button onClick={loadSpeechRecognition}>Start</button>*/}
+                <button onClick={startListening}>Start</button>
+                <button onClick={SpeechRecognition.stopListening}>Stop</button>
+                <button onClick={resetTranscript}>Reset</button>
+                <button style={{backgroundColor: voice ? 'green' : 'red'}} onClick={voiceButton}>голос</button>
+                <button style={{backgroundColor: face ? 'green' : 'red'}} onClick={faceButton}>мимика</button>
+                {/*<button onClick={scrollMassive}>Reset</button>*/}
+            </div>
+            <div style={{marginTop: '10px'}}>
+                <button onClick={controlUp}>UP</button>
+                <button onClick={controlDown}>DOWN</button>
+                <button onClick={controlLeft}>LEFT</button>
+                <button onClick={controlRight}>RIGHT</button>
+                <button onClick={controlStop}>STOP</button>
+            </div>
+            <div>
+                <Button style={{marginRight : 3, width: 50}} onClick={accelPlus}> + </Button>
+                <label style={{width: 33}}>{accelState}</label>
+                {/*<input type="text"*/}
+                {/*       style={{backgroundColor: 'transparent', textAlign: 'center', borderWidth: 1, width: 50, fontSize: 16, marginTop: 4}}*/}
+                {/*       value={accelState}*/}
+                {/*       onChange={(event) => {*/}
+                {/*            if(event.target.value > 0 && event.target.value < 10){*/}
+                {/*                accelUse(event.target.value)*/}
+                {/*            }else{*/}
+                {/*                accelUse(accelState)*/}
+                {/*            }*/}
+                {/*       }}*/}
+                {/*       onKeyPress={event => {*/}
+                {/*           if (event.key === "Enter") {*/}
+                {/*               //return sendUpDownLeftRight()*/}
+                {/*           }*/}
+                {/*       }}*/}
+                {/*/>*/}
+                <Button style={{marginLeft : 3, width: 50}} onClick={accelMinus}> - </Button>
+            </div>
             <div>{transcript}</div>
         </div>
     );

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import {ControlDevice} from "../Control/controlDevice";
+import {ControlFace} from "../Control/controlFace";
+//import returnWebSocket from "./ReturnWebSocket";
+//import {LeftRight, Stop, UpDown} from "../Control/control";
 
 class DrawBox extends Component {
   constructor(props) {
@@ -31,6 +33,20 @@ class DrawBox extends Component {
           faceMatcher.findBestMatch(descriptor)
         );
         this.setState({ match });
+        //const socket = returnWebSocket
+        // switch (match) {
+        //   case 'up':
+        //     UpDown(socket, '-1')
+        //   case 'down':
+        //     UpDown(socket, '1')
+        //   case 'left':
+        //     LeftRight(socket, '-1')
+        //   case 'right':
+        //     LeftRight(socket, '1')
+        //   case 'stop':
+        //     Stop(socket)
+        // }
+
       }
     }
   };
@@ -38,15 +54,15 @@ class DrawBox extends Component {
   setDrive(data){
     switch (data) {
       case 'up':
-        return <ControlDevice route={'UpDown'} data={'1'}/>
+        return <ControlFace route={'Up'}/>
       case 'down':
-        return <ControlDevice route={'UpDown'} data={'-1'}/>
+        return <ControlFace route={'Down'}/>
       case 'left':
-        return <ControlDevice route={'LeftRight'} data={'-1'}/>
+        return <ControlFace route={'Left'}/>
       case 'right':
-        return <ControlDevice route={'LeftRight'} data={'1'}/>
+        return <ControlFace route={'Right'}/>
       case 'stop':
-        return <ControlDevice route={'Stop'} data={'0'}/>
+        return <ControlFace route={'Stop'} />
     }
   }
 
@@ -91,9 +107,8 @@ class DrawBox extends Component {
                   }}
                 >
                   {match[i]._label}
-                  {this.setDrive(match[i]._label)}
 
-                  {/*<ControlDevice data={match[i]._label}/>*/}
+                  {this.setDrive(match[i]._label)}
 
                 </p>
               ) : null}

@@ -3,10 +3,12 @@ import {makeAutoObservable} from "mobx";
 export default class DeviceStore {
 
     constructor() {
-        this._username = ''
+        this._username = 'user'
         this._webSocket = {}
         this._connected = false
         this._close = true
+        this._faceControl = false
+        this._accel = '1'
         makeAutoObservable(this)
     }
 
@@ -40,6 +42,22 @@ export default class DeviceStore {
 
     setClose(value) {
         this._close = value;
+    }
+
+    get faceControl() {
+        return this._faceControl;
+    }
+
+    setFaceControl(value) {
+        this._faceControl = value;
+    }
+
+    get accel() {
+        return this._accel;
+    }
+
+    setAccel(value) {
+        this._accel = value;
     }
 
 }
