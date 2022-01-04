@@ -174,16 +174,16 @@ const Dictaphone33 = () => {
     }
 
     const controlUp = () => {
-        UpDown(device.webSocket, -1 + device.speedUD/10, device.accel)
+        UpDown(device.webSocket, -1 + device.speedUD/10, device.accel, device.delayCommand)
     }
     const controlDown = () => {
-        UpDown(device.webSocket, 1 - device.speedUD/10, device.accel)
+        UpDown(device.webSocket, 1 - device.speedUD/10, device.accel, device.delayCommand)
     }
     const controlLeft = () => {
-        LeftRight(device.webSocket, -1 + device.speedLR/10, device.accel)
+        LeftRight(device.webSocket, -1 + device.speedLR/10, device.accel, device.delayCommand)
     }
     const controlRight = () => {
-        LeftRight(device.webSocket, 1 - device.speedLR/10, device.accel)
+        LeftRight(device.webSocket, 1 - device.speedLR/10, device.accel, device.delayCommand)
     }
     const controlStop = () => {
         Stop(device.webSocket, 1)
@@ -222,6 +222,7 @@ const Dictaphone33 = () => {
 
     const delayCommandF = (delay) => {
         setDelayCommand(delay)
+        device.setDelayCommand(delay*1000)
     }
 
     return (
@@ -311,7 +312,7 @@ const Dictaphone33 = () => {
                 <input type='number'
                        step="1"
                        min='0'
-                       max='10'
+                       max='5'
                        style={{backgroundColor: 'transparent', textAlign: 'center', borderWidth: 1, width: 50, fontSize: 16, marginTop: 4, marginRight: 5}}
                        value={delayCommand}
                        onChange={(event) => {

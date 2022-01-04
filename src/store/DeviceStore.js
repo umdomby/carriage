@@ -11,6 +11,7 @@ export default class DeviceStore {
         this._accel = 1
         this._speedUD = 0
         this._speedLR = 0
+        this._delayCommand = 0
         makeAutoObservable(this)
     }
 
@@ -78,5 +79,11 @@ export default class DeviceStore {
         this._speedLR = value;
     }
 
+    get delayCommand() {
+        return this._delayCommand;
+    }
 
+    setDelayCommand(value) {
+        this._delayCommand = value;
+    }
 }
