@@ -19,6 +19,11 @@ const Dictaphone33 = () => {
     const [speedStateLR, setSpeedStateLR] = useState(0)
     const [delayCommand, setDelayCommand] = useState(0)
 
+    const timerControlUp = useRef(null)
+    const timerControlDown = useRef(null);
+    const timerControlLeft = useRef(null);
+    const timerControlRight = useRef(null);
+
     const commands = [
         {
             command: 'Привет',
@@ -174,18 +179,30 @@ const Dictaphone33 = () => {
     }
 
     const controlUp = () => {
-        UpDown(device.webSocket, -1 + device.speedUD/10, device.accel, device.delayCommand)
+        timerControlUp.current = setTimeout(() => {
+            UpDown(device.webSocket, -1 + device.speedUD/10, device.accel)
+        }, device.delayCommand);
     }
     const controlDown = () => {
-        UpDown(device.webSocket, 1 - device.speedUD/10, device.accel, device.delayCommand)
+        timerControlDown.current = setTimeout(() => {
+            UpDown(device.webSocket, 1 - device.speedUD/10, device.accel)
+        }, device.delayCommand);
     }
     const controlLeft = () => {
-        LeftRight(device.webSocket, -1 + device.speedLR/10, device.accel, device.delayCommand)
+        timerControlLeft.current = setTimeout(() => {
+            LeftRight(device.webSocket, -1 + device.speedLR/10, device.accel)
+        }, device.delayCommand);
     }
     const controlRight = () => {
-        LeftRight(device.webSocket, 1 - device.speedLR/10, device.accel, device.delayCommand)
+        timerControlRight.current = setTimeout(() => {
+            LeftRight(device.webSocket, 1 - device.speedLR/10, device.accel)
+        }, device.delayCommand);
     }
     const controlStop = () => {
+        clearTimeout(timerControlUp.current)
+        clearTimeout(timerControlDown.current)
+        clearTimeout(timerControlLeft.current)
+        clearTimeout(timerControlRight.current)
         Stop(device.webSocket, 1)
     }
 
