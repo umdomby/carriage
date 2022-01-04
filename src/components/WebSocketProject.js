@@ -53,7 +53,12 @@ const WebSocketProject = () => {
                 device.webSocket.send(JSON.stringify({
                     id: '1',
                     username: username,
-                    method: "connection"
+                    method: "connection",
+                    date: Date.now(),
+                    message: 0,
+                    message2: 0,
+                    // accel: accel,
+                    //stop: 0
                 }))
             }
             device.webSocket.onmessage = (event) => {
@@ -88,12 +93,12 @@ const WebSocketProject = () => {
 
     const socketTest = () => {
         if (device.webSocket.readyState === device.webSocket.CLOSED || device.webSocket.readyState === device.webSocket.CLOSING) {
-            if(device.username !== '' && device.connected === true) {
-                wsConnect(device.username)
-                console.log('WebSocket reconnected ' + device.username)
-            }else{
-                //console.log('WebSocket no connected')
-            }
+            //if(device.username !== '' && device.connected === true) {
+                wsConnect('user')
+                console.log('WebSocket reconnected ' + 'user')
+            // }else{
+            //     //console.log('WebSocket no connected')
+            // }
         } else {
             //console.log('WebSocket connected')
         }

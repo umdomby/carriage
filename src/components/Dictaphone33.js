@@ -15,7 +15,9 @@ const Dictaphone33 = () => {
     const [voice, setVoice] = useState(true);
     const [face, setFace] = useState(false);
     const [accelState, setAccelState] = useState(1)
-    const [speedState, setSpeedState] = useState(0)
+    const [speedStateUD, setSpeedStateUD] = useState(0)
+    const [speedStateLR, setSpeedStateLR] = useState(0)
+    const [delayCommand, setDelayCommand] = useState(0)
 
     const commands = [
         {
@@ -172,16 +174,16 @@ const Dictaphone33 = () => {
     }
 
     const controlUp = () => {
-        UpDown(device.webSocket, -1 + device.speed/10, device.accel)
+        UpDown(device.webSocket, -1 + device.speedUD/10, device.accel)
     }
     const controlDown = () => {
-        UpDown(device.webSocket, 1 - device.speed/10, device.accel)
+        UpDown(device.webSocket, 1 - device.speedUD/10, device.accel)
     }
     const controlLeft = () => {
-        LeftRight(device.webSocket, -1 + device.speed/10, device.accel)
+        LeftRight(device.webSocket, -1 + device.speedLR/10, device.accel)
     }
     const controlRight = () => {
-        LeftRight(device.webSocket, 1 - device.speed/10, device.accel)
+        LeftRight(device.webSocket, 1 - device.speedLR/10, device.accel)
     }
     const controlStop = () => {
         Stop(device.webSocket, 1)
@@ -208,9 +210,18 @@ const Dictaphone33 = () => {
     //         speedUse(speedState - 0.1)}
     // }
 
-    const speedUse = (speed) => {
-        setSpeedState(speed)
-        device.setSpeed(Number(speed))
+    const speedUseUD = (speedUD) => {
+        setSpeedStateUD(speedUD)
+        device.setSpeedUD(Number(speedUD))
+    }
+
+    const speedUseLR = (speedLR) => {
+        setSpeedStateLR(speedLR)
+        device.setSpeedLR(Number(speedLR))
+    }
+
+    const delayCommandF = (delay) => {
+        setDelayCommand(delay)
     }
 
     return (
@@ -263,10 +274,10 @@ const Dictaphone33 = () => {
                        min='0'
                        max='10'
                        style={{backgroundColor: 'transparent', textAlign: 'center', borderWidth: 1, width: 50, fontSize: 16, marginTop: 4, marginRight: 5}}
-                       value={speedState}
+                       value={speedStateUD}
                        onChange={(event) => {
                            // setSpeedState(event.target.value)
-                           speedUse(event.target.value)
+                           speedUseUD(event.target.value)
                        }}
                        onKeyPress={event => {
                            if (event.key === "Enter") {
@@ -275,7 +286,45 @@ const Dictaphone33 = () => {
                        }}
                 />
                 {/*<Button style={{marginLeft : 3, width: 50, marginRight: 5}} onClick={speedMinus}> - </Button>*/}
-                отнять делений
+                Degree UP, DOWN
+            </div>
+            <div>
+                <input type='number'
+                       step="1"
+                       min='0'
+                       max='10'
+                       style={{backgroundColor: 'transparent', textAlign: 'center', borderWidth: 1, width: 50, fontSize: 16, marginTop: 4, marginRight: 5}}
+                       value={speedStateLR}
+                       onChange={(event) => {
+                           // setSpeedState(event.target.value)
+                           speedUseLR(event.target.value)
+                       }}
+                       onKeyPress={event => {
+                           if (event.key === "Enter") {
+                               //return sendUpDownLeftRight()
+                           }
+                       }}
+                />
+                Degree LEFT, RIGHT
+            </div>
+            <div>
+                <input type='number'
+                       step="1"
+                       min='0'
+                       max='10'
+                       style={{backgroundColor: 'transparent', textAlign: 'center', borderWidth: 1, width: 50, fontSize: 16, marginTop: 4, marginRight: 5}}
+                       value={delayCommand}
+                       onChange={(event) => {
+                           // setSpeedState(event.target.value)
+                           delayCommandF(event.target.value)
+                       }}
+                       onKeyPress={event => {
+                           if (event.key === "Enter") {
+                               //return sendUpDownLeftRight()
+                           }
+                       }}
+                />
+                Delay COMMAND
             </div>
             <div>{transcript}</div>
         </div>

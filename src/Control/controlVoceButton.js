@@ -1,25 +1,29 @@
 
 
-export const LeftRight = (webSocket, speed, accel) => {
-    webSocket.send(JSON.stringify({
-        method: 'messages',
-        id: '1',
-        date: Date.now(),
-        message: speed,
-        accel: accel,
-        stop: 0
-    }))
+export const LeftRight = (webSocket, speedLR, accel) => {
+    setTimeout(() => {
+        webSocket.send(JSON.stringify({
+            method: 'messages',
+            id: '1',
+            date: Date.now(),
+            message: speedLR,
+            accel: accel,
+            stop: 0
+        }))
+    }, 5000);
 }
 
-export const UpDown = (webSocket, speed, accel) => {
-    webSocket.send(JSON.stringify({
-        method: 'messages',
-        id: '1',
-        date: Date.now(),
-        message2: speed,
-        accel: accel,
-        stop: 0
-    }))
+export const UpDown = (webSocket, speedUD, accel) => {
+    setTimeout(() => {
+        webSocket.send(JSON.stringify({
+            method: 'messages',
+            id: '1',
+            date: Date.now(),
+            message2: speedUD,
+            accel: accel,
+            stop: 0
+        }))
+    }, 5000);
 }
 
 export const Stop = (webSocket, accel) => {
@@ -31,16 +35,6 @@ export const Stop = (webSocket, accel) => {
         message2: 0,
         accel: accel,
         stop: 1
-
-    }))
-}
-
-export const Accel = (webSocket, accel) => {
-    webSocket.send(JSON.stringify({
-        method: 'messages',
-        id: '1',
-        date: Date.now(),
-        accel: accel
     }))
 }
 
