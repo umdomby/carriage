@@ -15,9 +15,10 @@ class DrawBox extends Component {
 
   componentDidMount() {
     this.getDescription();
+
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     this.getDescription(newProps);
   }
 

@@ -11,19 +11,19 @@ export const ControlFace = (props) => {
 
         switch (props.route) {
             case 'Up':
-                UpDown(device.webSocket, '-1', device.accel)
+                UpDown(device.webSocket, -1 + device.speedUD/10, device.accel)
                 //controlFaceUpDown('-1')
                 break
             case 'Down':
-                UpDown(device.webSocket, '1', device.accel)
+                UpDown(device.webSocket, 1 - device.speedUD/10, device.accel)
                 //controlFaceUpDown('1')
                 break
             case 'Left':
-                LeftRight(device.webSocket, '-1', device.accel)
+                LeftRight(device.webSocket, -1 + device.speedLR/10, device.accel)
                 //controlFaceLeftRight('-1')
                 break
             case 'Right':
-                LeftRight(device.webSocket, '1', device.accel)
+                LeftRight(device.webSocket, 1 - device.speedLR/10, device.accel)
                 //controlFaceLeftRight('1')
                 break
             case 'Stop':
