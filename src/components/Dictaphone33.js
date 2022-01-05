@@ -23,11 +23,15 @@ const Dictaphone33 = () => {
     const timerControlDown = useRef(null);
     const timerControlLeft = useRef(null);
     const timerControlRight = useRef(null);
+    const [languages, setLanguages] = useState('ru-RU')
+    const [amISpeaking, setAmISpeaking] = useState(false);
 
     const commands = [
         {
             command: 'Привет',
-            callback: () => console.log('Привет 2222')
+            callback: () => {
+                speak({text: "Привет"})
+            },
         },
         {
             command: 'очистить',
@@ -44,22 +48,34 @@ const Dictaphone33 = () => {
 
     const startListening = () => SpeechRecognition.startListening({
         continuous: true,
-        language: 'ru-RU'
+        language: languages
     });
 
     const stopListening = () => SpeechRecognition.stopListening();
 
     useEffect(() => {
         loadSpeechRecognition();
-    }, []);
+    }, [languages]);
+
+    useEffect(()=>{
+        var synth = window.speechSynthesis
+        setAmISpeaking(synth.speaking)
+        if(amISpeaking === false){
+            startListening()
+        }else{
+            stopListening()
+        }
+        console.log(amISpeaking)
+    },[speak])
 
     const loadSpeechRecognition = async () => {
         setLoadingSpeechRecognition(false);
         SpeechRecognition.startListening({
             continuous: true,
-            language: 'ru-RU'
+            language: languages
         });
     }
+
 
     useEffect(() => {
         // setMessages2(prev => [transcript, ...prev])
@@ -77,6 +93,13 @@ const Dictaphone33 = () => {
     }, [transcript]);
 
     const speech = (text) => {
+        if(text.includes("три закона")){
+            speak({ text: "Робот не может причинить вред человеку или своим бездействием допустить, чтобы человеку был причинён вред\n" +
+                    "Робот должен повиноваться всем приказам, которые даёт человек, кроме тех случаев, когда эти приказы противоречат Первому Закону\n" +
+                    "Робот должен заботиться о своей безопасности в той мере, в которой это не противоречит Первому или Второму Законам"})
+            setVoice(true)
+            resetTranscript()
+        }
         if(text.includes("голос включить")){
             speak({ text: "голос включен"})
             setOldText('голос включен')
@@ -219,14 +242,6 @@ const Dictaphone33 = () => {
         device.setAccel(accel)
     }
 
-    // const speedPlus = () => {
-    //     speedUse(speedState + 0.1)
-    // }
-    // const speedMinus = () => {
-    //     if(speedState > 0){
-    //         speedUse(speedState - 0.1)}
-    // }
-
     const speedUseUD = (speedUD) => {
         setSpeedStateUD(speedUD)
         device.setSpeedUD(Number(speedUD))
@@ -244,11 +259,11 @@ const Dictaphone33 = () => {
 
     return (
         <div>
-            <div style={{margin: 3}}>Microphone: {listening ? 'on' : 'off'}</div>
+            <div style={{margin: 3}}>Microphone: {listening ? 'on' : 'off'} {languages}</div>
             <div>
                 {/*<button onClick={loadSpeechRecognition}>Start</button>*/}
                 <button onClick={startListening}>Start</button>
-                <button onClick={SpeechRecognition.stopListening}>Stop</button>
+                <button onClick={stopListening}>Stop</button>
                 <button onClick={resetTranscript}>Reset</button>
                 <button style={{backgroundColor: voice ? 'green' : 'red'}} onClick={voiceButton}>голос</button>
                 <button style={{backgroundColor: face ? 'green' : 'red'}} onClick={faceButton}>мимика</button>
@@ -345,6 +360,13 @@ const Dictaphone33 = () => {
                 Delay COMMAND
             </div>
             <div>{transcript}</div>
+            <div>
+                <select onChange={(event) => setLanguages(event.target.value)}>
+                    <option value="ru-RU">Russian</option>
+                    <option value="en-GB">English</option>
+                </select>
+            </div>
+            {amISpeaking ? <div className='circle-red'></div>  : <div className='circle-green'></div> }
         </div>
     );
 };
