@@ -12,78 +12,42 @@ export default class DeviceStore {
         this._speedUD = 0
         this._speedLR = 0
         this._delayCommand = 0
+        this._voiceCommand = false
+        this._speech = ''
         makeAutoObservable(this)
     }
 
-    get username() {
-        return this._username;
-    }
+    get username() {return this._username;}
+    setUsername(value) {this._username = value;}
 
-    setUsername(value) {
-        this._username = value;
-    }
+    get webSocket() {return this._webSocket;}
+    setWebSocket(value) {this._webSocket = value;}
 
-    get webSocket() {
-        return this._webSocket;
-    }
+    get connected() {return this._connected;}
+    setConnected(value) {this._connected = value;}
 
-    setWebSocket(value) {
-        this._webSocket = value;
-    }
+    get close() {return this._close;}
+    setClose(value) {this._close = value;}
 
-    get connected() {
-        return this._connected;
-    }
+    get faceControl() {return this._faceControl;}
+    setFaceControl(value) {this._faceControl = value;}
 
-    setConnected(value) {
-        this._connected = value;
-    }
+    get accel() {return this._accel;}
+    setAccel(value) {this._accel = value;}
 
-    get close() {
-        return this._close;
-    }
+    get speedUD() {return this._speedUD;}
+    setSpeedUD(value) {this._speedUD = value;}
 
-    setClose(value) {
-        this._close = value;
-    }
+    get speedLR() {return this._speedLR;}
+    setSpeedLR(value) {this._speedLR = value;}
 
-    get faceControl() {
-        return this._faceControl;
-    }
+    get delayCommand() {return this._delayCommand;}
+    setDelayCommand(value) {this._delayCommand = value;}
 
-    setFaceControl(value) {
-        this._faceControl = value;
-    }
+    get voiceCommand() {return this._voiceCommand;}
+    setVoiceCommand(value) {this._voiceCommand = value;}
 
-    get accel() {
-        return this._accel;
-    }
+    get speech() {return this._speech;}
+    setSpeech(value) {this._speech = value;}
 
-    setAccel(value) {
-        this._accel = value;
-    }
-
-    get speedUD() {
-        return this._speedUD;
-    }
-
-    setSpeedUD(value) {
-        this._speedUD = value;
-    }
-
-    get speedLR() {
-        return this._speedLR;
-    }
-
-    setSpeedLR(value) {
-        this._speedLR = value;
-    }
-
-    get delayCommand() {
-        return this._delayCommand;
-    }
-
-    setDelayCommand(value) {
-        this._delayCommand = value;
-    }
 }

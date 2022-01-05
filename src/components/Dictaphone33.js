@@ -4,6 +4,7 @@ import { useSpeechSynthesis } from 'react-speech-kit';
 import {Context} from "../index";
 import {UpDown, Stop, LeftRight} from '../Control/controlVoceButton'
 import {Button} from "react-bootstrap";
+import {russian} from "../command/russian";
 
 const Dictaphone33 = () => {
 
@@ -29,9 +30,7 @@ const Dictaphone33 = () => {
     const commands = [
         {
             command: 'Привет',
-            callback: () => {
-                speak({text: "Привет"})
-            },
+            callback: () => {speak({text: "Привет"})},
         },
         {
             command: 'очистить',
@@ -76,7 +75,6 @@ const Dictaphone33 = () => {
         });
     }
 
-
     useEffect(() => {
         // setMessages2(prev => [transcript, ...prev])
         if(transcript.toString().toLowerCase().includes(oldText) || transcript.toString().toLowerCase().includes(oldText2)){
@@ -93,101 +91,26 @@ const Dictaphone33 = () => {
     }, [transcript]);
 
     const speech = (text) => {
-        if(text.includes("три закона")){
-            speak({ text: "Робот не может причинить вред человеку или своим бездействием допустить, чтобы человеку был причинён вред\n" +
-                    "Робот должен повиноваться всем приказам, которые даёт человек, кроме тех случаев, когда эти приказы противоречат Первому Закону\n" +
-                    "Робот должен заботиться о своей безопасности в той мере, в которой это не противоречит Первому или Второму Законам"})
-            setVoice(true)
+        if(russian(text, voice) != '') {
+            speak({text: russian(text, voice)})
+            if(russian(text, voice) === 'голос включен'){setVoice(true)}
+            if(russian(text, voice) === 'голос выключен'){setVoice(false)}
+            if(russian(text, voice) === 'мимика включена'){setFace(true)}
+            if(russian(text, voice) === 'мимика выключена'){setFace(false)}
+            if(russian(text, voice) === 'вперёд'){controlUp()}
+            if(russian(text, voice) === 'назад'){controlDown()}
+            if(russian(text, voice) === 'влево'){controlLeft()}
+            if(russian(text, voice) === 'вправа'){controlRight()}
+            if(russian(text, voice) === 'стоп'){controlStop()}
+            if(russian(text, voice) === 'мимика и голос включены'){
+                setVoice(true)
+                setFace(true)
+                device.setFaceControl(true)}
+            if(russian(text, voice) === 'мимика и голос выключены'){
+                setVoice(false)
+                setFace(false)
+                device.setFaceControl(false)}
             resetTranscript()
-        }
-        if(text.includes("голос включить")){
-            speak({ text: "голос включен"})
-            setOldText('голос включен')
-            setVoice(true)
-            resetTranscript()
-        }
-        if(text.includes("голос отключить") || text.includes("голос выключить")){
-            speak({ text: "голос выключен"})
-            setOldText('голос выключен')
-            setVoice(false)
-            resetTranscript()
-        }
-        if(text.includes("мимика включить")){
-            speak({ text: "мимика включена"})
-            setOldText('мимика включена')
-            setFace(true)
-            device.setFaceControl(true)
-            resetTranscript()
-        }
-        if(text.includes("мимика отключить") || text.includes("мимика выключить")){
-            speak({ text: "мимика выключена"})
-            setOldText('мимика выключена')
-            setFace(false)
-            device.setFaceControl(false)
-            resetTranscript()
-        }
-        if(text.includes("всё включить")){
-            speak({ text: "мимика и голос включены"})
-            setOldText('мимика и голос включены')
-            setVoice(true)
-            setFace(true)
-            device.setFaceControl(true)
-            resetTranscript()
-        }
-        if(text.includes("всё выключить")){
-            speak({ text: "мимика и голос выключены"})
-            setOldText('мимика и голос выключены')
-            setVoice(false)
-            setFace(false)
-            device.setFaceControl(false)
-            resetTranscript()
-        }
-        if(voice) {
-            if (text.includes("вики") || text.includes("микки") || text.includes("витя")) {
-                speak({text: "да, Сергей."})
-                resetTranscript()
-            }
-            if (text.includes("перед") || text.includes("перёд")) {
-                speak({text: "вперёд"})
-                setOldText('перёд')
-                setOldText2('перед')
-                controlUp()
-                resetTranscript()
-            }
-            if (text.includes("назад")) {
-                speak({text: "назад"})
-                setOldText('назад')
-                controlDown()
-                resetTranscript()
-            }
-            if (text.includes("лево") || text.includes("лева") || text.includes("лего") || text.includes("лёва")) {
-                speak({text: "влево"})
-                controlLeft()
-                setOldText('лев')
-                resetTranscript()
-            }
-            if (text.includes("права") || text.includes("право") || text.includes("справо") || text.includes("справа") || text.includes("трава")) {
-                speak({text: "вправа"})
-                setOldText('прав')
-                controlRight()
-                resetTranscript()
-            }
-            if (text.includes("стоп") || text.includes("стоп")) {
-                speak({text: "стоп"})
-                setOldText('сто')
-                controlStop()
-                resetTranscript()
-            }
-            if (text.includes("закрыть")) {
-                window.close();
-                resetTranscript()
-            }
-            if (text.includes("фильмы")) {
-                speak({text: "фильмы"})
-                setOldText('фильмы')
-                window.open('https://rezka.ag/', "_blank")
-                resetTranscript()
-            }
         }
     }
     if (loadingSpeechRecognition || !browserSupportsSpeechRecognition) {
@@ -221,6 +144,7 @@ const Dictaphone33 = () => {
             LeftRight(device.webSocket, 1 - device.speedLR/10, device.accel)
         }, device.delayCommand);
     }
+
     const controlStop = () => {
         clearTimeout(timerControlUp.current)
         clearTimeout(timerControlDown.current)
@@ -241,17 +165,14 @@ const Dictaphone33 = () => {
         setAccelState(accel)
         device.setAccel(accel)
     }
-
     const speedUseUD = (speedUD) => {
         setSpeedStateUD(speedUD)
         device.setSpeedUD(Number(speedUD))
     }
-
     const speedUseLR = (speedLR) => {
         setSpeedStateLR(speedLR)
         device.setSpeedLR(Number(speedLR))
     }
-
     const delayCommandF = (delay) => {
         setDelayCommand(delay)
         device.setDelayCommand(delay*1000)
@@ -279,33 +200,11 @@ const Dictaphone33 = () => {
             <div style={{marginTop: 4}}>
                 <Button style={{marginRight : 3, width: 50}} onClick={accelPlus}> + </Button>
                 <label>{accelState}</label>
-
-                {/*<input type="text"*/}
-                {/*       style={{backgroundColor: 'transparent', textAlign: 'center', borderWidth: 1, width: 50, fontSize: 16, marginTop: 4}}*/}
-                {/*       value={accelState}*/}
-                {/*       onChange={(event) => {*/}
-                {/*            if(event.target.value > 0 && event.target.value < 10){*/}
-                {/*                accelUse(event.target.value)*/}
-                {/*            }else{*/}
-                {/*                accelUse(accelState)*/}
-                {/*            }*/}
-                {/*       }}*/}
-                {/*       onKeyPress={event => {*/}
-                {/*           if (event.key === "Enter") {*/}
-                {/*               //return sendUpDownLeftRight()*/}
-                {/*           }*/}
-                {/*       }}*/}
-                {/*/>*/}
                 <Button style={{marginLeft : 3, width: 50, marginRight: 5}} onClick={accelMinus}> - </Button>
                 замедление
             </div>
             <div>
-                {/*<Button style={{marginRight : 3, width: 50}} onClick={speedPlus}> + </Button>*/}
-                {/*<label>{speedState}</label>*/}
-                <input type='number'
-                       step="1"
-                       min='0'
-                       max='10'
+                <input type='number' step="1" min='0' max='10'
                        style={{backgroundColor: 'transparent', textAlign: 'center', borderWidth: 1, width: 50, fontSize: 16, marginTop: 4, marginRight: 5}}
                        value={speedStateUD}
                        onChange={(event) => {
@@ -318,14 +217,10 @@ const Dictaphone33 = () => {
                            }
                        }}
                 />
-                {/*<Button style={{marginLeft : 3, width: 50, marginRight: 5}} onClick={speedMinus}> - </Button>*/}
                 Degree UP, DOWN
             </div>
             <div>
-                <input type='number'
-                       step="1"
-                       min='0'
-                       max='10'
+                <input type='number' step="1" min='0' max='10'
                        style={{backgroundColor: 'transparent', textAlign: 'center', borderWidth: 1, width: 50, fontSize: 16, marginTop: 4, marginRight: 5}}
                        value={speedStateLR}
                        onChange={(event) => {
@@ -341,10 +236,7 @@ const Dictaphone33 = () => {
                 Degree LEFT, RIGHT
             </div>
             <div>
-                <input type='number'
-                       step="1"
-                       min='0'
-                       max='5'
+                <input type='number' step="1" min='0' max='5'
                        style={{backgroundColor: 'transparent', textAlign: 'center', borderWidth: 1, width: 50, fontSize: 16, marginTop: 4, marginRight: 5}}
                        value={delayCommand}
                        onChange={(event) => {
