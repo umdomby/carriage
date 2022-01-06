@@ -14,6 +14,7 @@ export default class DeviceStore {
         this._delayCommand = 0
         this._voiceCommand = false
         this._speech = ''
+        this._lang = 'ru-RU'
         makeAutoObservable(this)
     }
 
@@ -50,4 +51,12 @@ export default class DeviceStore {
     get speech() {return this._speech;}
     setSpeech(value) {this._speech = value;}
 
+
+    get lang() {
+        return this._lang;
+    }
+
+    setLang(value) {
+        this._lang = value;
+    }
 }

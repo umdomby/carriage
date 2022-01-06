@@ -17,6 +17,13 @@ export const russian = (text, voice) => {
         if (text.includes("права") || text.includes("право") || text.includes("справо") || text.includes("справа") || text.includes("трава")) {return "вправа"}
         if (text.includes("стоп") || text.includes("стоп")) {return "стоп"}
 
+
+        if(text.includes('go')){return 'go'}
+        if(text.includes('back')){return 'back'}
+        if(text.includes('left')){return 'left'}
+        if(text.includes('right')){return 'right'}
+        if(text.includes('stop')){return 'stop'}
+
         // if (text.includes("закрыть")) {
         //     window.close();
         //     resetTranscript()
@@ -29,6 +36,8 @@ export const russian = (text, voice) => {
         // }
 
     }
+
+
 
     return ''
 

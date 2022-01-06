@@ -1,17 +1,18 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { useSpeechSynthesis } from 'react-speech-kit';
 import {Context} from "../index";
 import {UpDown, Stop, LeftRight} from '../Control/controlVoceButton'
 import {Button} from "react-bootstrap";
 import {russian} from "../command/russian";
-import {useSpeechSynthesis} from "./useSpeechSynthesis";
 
 const Dictaphone33 = () => {
-    const [ voices, speak, speaking] = useSpeechSynthesis();
-    const [ currentVoice, setCurrentVoice ] = useState();
+    // let utterance = new SpeechSynthesisUtterance('Ciao')
+    // utterance.lang = 'en-US'
 
     const {device} = useContext(Context)
     const [loadingSpeechRecognition, setLoadingSpeechRecognition] = useState(true);
+    const { speak } = useSpeechSynthesis();
     const [voice, setVoice] = useState(true);
     const [face, setFace] = useState(false);
     const [accelState, setAccelState] = useState(1)
@@ -24,18 +25,7 @@ const Dictaphone33 = () => {
     const timerControlLeft = useRef(null);
     const timerControlRight = useRef(null);
     const [languages, setLanguages] = useState('ru-RU')
-
-    useEffect(()=>{
-        // var synth = window.speechSynthesis
-        // setAmISpeaking(synth.speaking)
-        //setAmISpeaking(speaking)
-        if(speaking === false){
-            startListening()
-        }
-        if(speaking === true){
-            stopListening()
-        }
-    },[speak, speaking])
+    const [amISpeaking, setAmISpeaking] = useState(false);
 
     const commands = [
         // {
@@ -55,8 +45,6 @@ const Dictaphone33 = () => {
         browserSupportsSpeechRecognition
     } = useSpeechRecognition({commands});
 
-
-
     const startListening = () => SpeechRecognition.startListening({
         continuous: true,
         language: languages
@@ -75,6 +63,15 @@ const Dictaphone33 = () => {
         loadSpeechRecognition();
     }, [languages]);
 
+    useEffect(()=>{
+        var synth = window.speechSynthesis
+        setAmISpeaking(synth.speaking)
+        if(amISpeaking === false){
+            startListening()
+        }else{
+            stopListening()
+        }
+    },[speak])
 
     const loadSpeechRecognition = async () => {
         setLoadingSpeechRecognition(false);
@@ -104,19 +101,17 @@ const Dictaphone33 = () => {
     const speech = (text) => {
         let action = russian(text, voice)
         if(action != '') {
-
             //speechVoice(action, languages)
-
-            speak(action)
+            speak({text: russian(text, voice)})
             if(action === 'голос включен'){setVoice(true)}
             if(action === 'голос выключен'){setVoice(false)}
             if(action === 'мимика включена'){setFace(true)}
             if(action === 'мимика выключена'){setFace(false)}
-            if(action === 'вперёд' || action === 'go'){controlUp()}
-            if(action === 'назад' || action === 'back'){controlDown()}
-            if(action === 'влево' || action === 'left'){controlLeft()}
-            if(action === 'вправа' || action === 'right'){controlRight()}
-            if(action === 'стоп' || action === 'stop'){controlStop()}
+            if(action === 'вперёд'){controlUp()}
+            if(action === 'назад'){controlDown()}
+            if(action === 'влево'){controlLeft()}
+            if(action === 'вправа'){controlRight()}
+            if(action === 'стоп'){controlStop()}
             if(action === 'мимика и голос включены'){
                 setVoice(true)
                 setFace(true)
@@ -267,19 +262,12 @@ const Dictaphone33 = () => {
             </div>
             <div>{transcript}</div>
             <div>
-                <select onChange={(event) => {
-                    setLanguages(event.target.value)
-                    device.setLang(event.target.value)
-                }}>
+                <select onChange={(event) => setLanguages(event.target.value)}>
                     <option value="ru-RU">Russian</option>
                     <option value="en-GB">English</option>
                 </select>
             </div>
-            {/*{speaking ? <div className='circle-red'></div>  : <div className='circle-green'></div> }*/}
-
-            {speaking ? <div className='circle-red'></div>  : <div className='circle-green'></div> }
-
-
+            {amISpeaking ? <div className='circle-red'></div>  : <div className='circle-green'></div> }
         </div>
     );
 };
