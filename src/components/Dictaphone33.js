@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import {Context} from "../index";
-import {UpDown, Stop, LeftRight} from '../Control/controlVoceButton'
+import {UpDown, Stop, LeftRight, DegreeGoBack} from '../Control/controlVoceButton'
 import {Button} from "react-bootstrap";
 import {russian} from "../command/russian";
 import {useSpeechSynthesis} from "./useSpeechSynthesis";
@@ -182,6 +182,7 @@ const Dictaphone33 = () => {
     const speedUseUD = (speedUD) => {
         setSpeedStateUD(speedUD)
         device.setSpeedUD(Number(speedUD))
+        DegreeGoBack(device.webSocket, speedUD)
     }
     const speedUseLR = (speedLR) => {
         setSpeedStateLR(speedLR)
