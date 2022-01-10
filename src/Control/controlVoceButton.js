@@ -56,6 +56,12 @@ export const accelF = (webSocket, accel) => {
     }))
 }
 
+export const langF = (webSocket, languages) => {
+    webSocket.send(JSON.stringify({
+        method: 'languages',
+        languages: languages
+    }))
+}
 
 
 

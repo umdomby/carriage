@@ -8,7 +8,7 @@ import {
     DegreeGoBack,
     DegreeLeftRight,
     daleyCommand,
-    accelF
+    accelF, langF
 } from '../Control/controlVoceButton'
 import {Button} from "react-bootstrap";
 import {russian} from "../command/russian";
@@ -20,18 +20,18 @@ const Dictaphone33 = () => {
 
     const {device} = useContext(Context)
     const [loadingSpeechRecognition, setLoadingSpeechRecognition] = useState(true);
-    const [voice, setVoice] = useState(true);
-    const [face, setFace] = useState(false);
+    const [voice, setVoice] = useState(true)
+    const [face, setFace] = useState(false)
     const [accelState, setAccelState] = useState(device.accel)
     const [speedStateUD, setSpeedStateUD] = useState(device.degreegoback)
     const [speedStateLR, setSpeedStateLR] = useState(device.degreeleftright)
     const [delayCommand, setDelayCommand] = useState(device.delaycommand)
+    const [languages, setLanguages] = useState(device.lang)
 
     const timerControlUp = useRef(null)
     const timerControlDown = useRef(null);
     const timerControlLeft = useRef(null);
     const timerControlRight = useRef(null);
-    const [languages, setLanguages] = useState('ru-RU')
 
 
     useEffect(()=>{
@@ -40,21 +40,27 @@ const Dictaphone33 = () => {
             setSpeedStateLR(device.degreeleftright)
             setAccelState(device.accel)
             setDelayCommand(device.delaycommand)
+            setLanguages(device.lang)
         }, 1000);
         return () => clearTimeout(timer);
     },[])
 
     useEffect(()=>{
-        // var synth = window.speechSynthesis
+        var synth = window.speechSynthesis
         // setAmISpeaking(synth.speaking)
-        //setAmISpeaking(speaking)
-        if(speaking === false){
-            startListening()
+        // setAmISpeaking(speaking)
+        if(speaking === false && synth.speaking === false){
+            //setTimeout(() => {
+                startListening()
+            //}, 1000);
+
         }
-        if(speaking === true){
+        else if(speaking === true && synth.speaking === true){
             stopListening()
+            SpeechRecognition.stopListening()
         }
-    },[speak, speaking])
+        console.log("speaking: " + speaking)
+    },[speak])
 
     const commands = [
         // {
@@ -90,7 +96,7 @@ const Dictaphone33 = () => {
 
     useEffect(() => {
         loadSpeechRecognition();
-    }, [languages]);
+    }, []);
 
 
     const loadSpeechRecognition = async () => {
@@ -212,6 +218,12 @@ const Dictaphone33 = () => {
         daleyCommand(device.webSocket, delay)
     }
 
+    const languagesF = (languages) => {
+        setLanguages(languages)
+        //device.setLang(lang)
+        langF(device.webSocket, languages)
+    }
+
     return (
         <div>
             <div style={{margin: 3}}>Microphone: {listening ? 'on' : 'off'} {languages}</div>
@@ -287,9 +299,8 @@ const Dictaphone33 = () => {
             </div>
             <div>{transcript}</div>
             <div>
-                <select onChange={(event) => {
-                    setLanguages(event.target.value)
-                    device.setLang(event.target.value)
+                <select value={languages} onChange={(event) => {
+                    languagesF(event.target.value)
                 }}>
                     <option value="ru-RU">Russian</option>
                     <option value="en-GB">English</option>

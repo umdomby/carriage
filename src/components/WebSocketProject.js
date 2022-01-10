@@ -27,10 +27,9 @@ const WebSocketProject = () => {
                 }))
             }
             device.webSocket.onmessage = (event) => {
-                const a = event.data
+
                 let msg = JSON.parse(event.data)
-                const bb= msg.method
-                const aad = 0
+
                 if(device.webSocket.readyState !== device.webSocket.CLOSED && device.webSocket.readyState !== device.webSocket.CLOSING) {
                     switch (msg.method) {
                         case "connection":
@@ -40,10 +39,12 @@ const WebSocketProject = () => {
                             device.setDegreeleftright(msg.degreeleftright)
                             device.setDelaycommand(msg.delaycommand)
                             device.setAccel(msg.accel)
+                            device.setLang(msg.languages)
                             console.log("device.degreegoback: " + device.degreegoback)
                             console.log("device.degreeleftright: " + device.degreeleftright)
                             console.log("device.delaycommand: " + device.delaycommand)
                             console.log("device.accel: " + device.accel)
+                            console.log("device.languages: " + device.lang)
                             break
                         case "online":
                             console.log(`online`)
@@ -52,6 +53,11 @@ const WebSocketProject = () => {
                             device.setDegreegoback(msg.degreegoback)
                             console.log("msg.degreegoback " + msg.degreegoback)
                             console.log("device.degreegoback " + device.degreegoback)
+                            break
+                        case "degreeleftright":
+                            device.setDegreeleftright(msg.degreeleftright)
+                            console.log("msg.degreeleftright " + msg.degreeleftright)
+                            console.log("device.degreeleftright " + device.degreeleftright)
                             break
                         case "delaycommand":
                             device.setDelaycommand(msg.delaycommand)
@@ -63,10 +69,10 @@ const WebSocketProject = () => {
                             console.log("msg.accel " + msg.accel)
                             console.log("device.accel " + device.accel)
                             break
-                        case "degreeleftright":
-                            device.setDegreeleftright(msg.degreeleftright)
-                            console.log("msg.degreeleftright " + msg.degreeleftright)
-                            console.log("device.degreeleftright " + device.degreeleftright)
+                        case "languages":
+                            device.setLang(msg.languages)
+                            console.log("msg.languages " + msg.languages)
+                            console.log("device.languages " + device.lang)
                             break
                         case "messages":
                             console.log("message "+ msg.message + "  message2 " + msg.message2)
