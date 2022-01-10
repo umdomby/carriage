@@ -1,7 +1,15 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import {Context} from "../index";
-import {UpDown, Stop, LeftRight, DegreeGoBack} from '../Control/controlVoceButton'
+import {
+    UpDown,
+    Stop,
+    LeftRight,
+    DegreeGoBack,
+    DegreeLeftRight,
+    daleyCommand,
+    accelF
+} from '../Control/controlVoceButton'
 import {Button} from "react-bootstrap";
 import {russian} from "../command/russian";
 import {useSpeechSynthesis} from "./useSpeechSynthesis";
@@ -14,10 +22,10 @@ const Dictaphone33 = () => {
     const [loadingSpeechRecognition, setLoadingSpeechRecognition] = useState(true);
     const [voice, setVoice] = useState(true);
     const [face, setFace] = useState(false);
-    const [accelState, setAccelState] = useState(1)
+    const [accelState, setAccelState] = useState(device.accel)
     const [speedStateUD, setSpeedStateUD] = useState(device.degreegoback)
-    const [speedStateLR, setSpeedStateLR] = useState(0)
-    const [delayCommand, setDelayCommand] = useState(0)
+    const [speedStateLR, setSpeedStateLR] = useState(device.degreeleftright)
+    const [delayCommand, setDelayCommand] = useState(device.delaycommand)
 
     const timerControlUp = useRef(null)
     const timerControlDown = useRef(null);
@@ -29,9 +37,12 @@ const Dictaphone33 = () => {
     useEffect(()=>{
         const timer = setTimeout(() => {
             setSpeedStateUD(device.degreegoback)
+            setSpeedStateLR(device.degreeleftright)
+            setAccelState(device.accel)
+            setDelayCommand(device.delaycommand)
         }, 1000);
         return () => clearTimeout(timer);
-    },[device.degreegoback])
+    },[])
 
     useEffect(()=>{
         // var synth = window.speechSynthesis
@@ -144,22 +155,24 @@ const Dictaphone33 = () => {
     const controlUp = () => {
         timerControlUp.current = setTimeout(() => {
             UpDown(device.webSocket, -1 + device.degreegoback/10, device.accel)
-        }, device.delayCommand);
+        }, device.delaycommand * 1000);
     }
     const controlDown = () => {
         timerControlDown.current = setTimeout(() => {
             UpDown(device.webSocket, 1 - device.degreegoback/10, device.accel)
-        }, device.delayCommand);
+        }, device.delaycommand * 1000);
     }
     const controlLeft = () => {
         timerControlLeft.current = setTimeout(() => {
-            LeftRight(device.webSocket, -1 + device.speedLR/10, device.accel)
-        }, device.delayCommand);
+            LeftRight(device.webSocket, -1 + device.degreeleftright/10, device.accel)
+            //LeftRight(device.webSocket, -1 + device.speedLR/10, device.accel)
+        }, device.delaycommand * 1000);
     }
     const controlRight = () => {
         timerControlRight.current = setTimeout(() => {
-            LeftRight(device.webSocket, 1 - device.speedLR/10, device.accel)
-        }, device.delayCommand);
+            LeftRight(device.webSocket, 1 - device.degreeleftright/10, device.accel)
+            //LeftRight(device.webSocket, 1 - device.speedLR/10, device.accel)
+        }, device.delaycommand * 1000);
     }
 
     const controlStop = () => {
@@ -180,7 +193,8 @@ const Dictaphone33 = () => {
     }
     const accelUse = (accel) => {
         setAccelState(accel)
-        device.setAccel(accel)
+        //device.setAccel(accel)
+        accelF(device.webSocket, accel)
     }
     const speedUseUD = (speedUD) => {
         setSpeedStateUD(speedUD)
@@ -189,11 +203,13 @@ const Dictaphone33 = () => {
     }
     const speedUseLR = (speedLR) => {
         setSpeedStateLR(speedLR)
-        device.setSpeedLR(Number(speedLR))
+        DegreeLeftRight(device.webSocket, speedLR)
+        //device.setSpeedLR(Number(speedLR))
     }
     const delayCommandF = (delay) => {
         setDelayCommand(delay)
-        device.setDelayCommand(delay*1000)
+        //device.setDelaycommand(delay)
+        daleyCommand(device.webSocket, delay)
     }
 
     return (

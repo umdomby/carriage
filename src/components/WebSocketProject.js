@@ -37,7 +37,13 @@ const WebSocketProject = () => {
                             console.log(`пользователь ${msg.username} присоединился`)
                             console.log(msg.txt)
                             device.setDegreegoback(msg.degreegoback)
+                            device.setDegreeleftright(msg.degreeleftright)
+                            device.setDelaycommand(msg.delaycommand)
+                            device.setAccel(msg.accel)
                             console.log("device.degreegoback: " + device.degreegoback)
+                            console.log("device.degreeleftright: " + device.degreeleftright)
+                            console.log("device.delaycommand: " + device.delaycommand)
+                            console.log("device.accel: " + device.accel)
                             break
                         case "online":
                             console.log(`online`)
@@ -46,6 +52,21 @@ const WebSocketProject = () => {
                             device.setDegreegoback(msg.degreegoback)
                             console.log("msg.degreegoback " + msg.degreegoback)
                             console.log("device.degreegoback " + device.degreegoback)
+                            break
+                        case "delaycommand":
+                            device.setDelaycommand(msg.delaycommand)
+                            console.log("msg.delaycommand " + msg.delaycommand)
+                            console.log("device.delaycommand " + device.delaycommand)
+                            break
+                        case "accel":
+                            device.setAccel(msg.accel)
+                            console.log("msg.accel " + msg.accel)
+                            console.log("device.accel " + device.accel)
+                            break
+                        case "degreeleftright":
+                            device.setDegreeleftright(msg.degreeleftright)
+                            console.log("msg.degreeleftright " + msg.degreeleftright)
+                            console.log("device.degreeleftright " + device.degreeleftright)
                             break
                         case "messages":
                             console.log("message "+ msg.message + "  message2 " + msg.message2)

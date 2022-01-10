@@ -35,6 +35,30 @@ export const DegreeGoBack = (webSocket, speedUD) => {
     }))
 }
 
+export const DegreeLeftRight = (webSocket, speedLR) => {
+    webSocket.send(JSON.stringify({
+        method: 'degreeleftright',
+        degreeleftright: speedLR
+    }))
+}
+
+export const daleyCommand = (webSocket, delay) => {
+    webSocket.send(JSON.stringify({
+        method: 'delaycommand',
+        delaycommand: delay
+    }))
+}
+
+export const accelF = (webSocket, accel) => {
+    webSocket.send(JSON.stringify({
+        method: 'accel',
+        accel: accel
+    }))
+}
+
+
+
+
 
 
 
