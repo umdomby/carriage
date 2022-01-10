@@ -52,15 +52,16 @@ const Dictaphone33 = () => {
         if(speaking === false && synth.speaking === false){
             //setTimeout(() => {
                 startListening()
-            //}, 1000);
-
+            //}, 1500);
         }
-        else if(speaking === true && synth.speaking === true){
-            stopListening()
+        if(speaking === true){
+            setTimeout(() => {
             SpeechRecognition.stopListening()
+            }, 500);
+            //stopListening()
         }
         console.log("speaking: " + speaking)
-    },[speak])
+    },[speaking])
 
     const commands = [
         // {
@@ -98,6 +99,13 @@ const Dictaphone33 = () => {
         loadSpeechRecognition();
     }, []);
 
+    useEffect(() => {
+        SpeechRecognition.startListening({
+            continuous: true,
+            language: languages
+        });
+    }, [languages]);
+
 
     const loadSpeechRecognition = async () => {
         setLoadingSpeechRecognition(false);
@@ -125,7 +133,7 @@ const Dictaphone33 = () => {
     }, [transcript]);
 
     const speech = (text) => {
-        let action = russian(text, voice)
+        let action = russian(text, voice, languages)
         if(action != '') {
             speak(action)
             if(action === 'голос включен'){setVoice(true)}
