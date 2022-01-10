@@ -1,6 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Context} from "../index";
 import {Button} from "react-bootstrap";
+import Dictaphone33 from "./Dictaphone33";
+
 
 const WebSocketProject = () => {
 
@@ -34,12 +36,16 @@ const WebSocketProject = () => {
                         case "connection":
                             console.log(`пользователь ${msg.username} присоединился`)
                             console.log(msg.txt)
+                            device.setDegreegoback(msg.degreegoback)
+                            console.log("device.degreegoback: " + device.degreegoback)
                             break
                         case "online":
                             console.log(`online`)
                             break
                         case "degreegoback":
-                            console.log("degreegoback " + msg.degreegoback)
+                            device.setDegreegoback(msg.degreegoback)
+                            console.log("msg.degreegoback " + msg.degreegoback)
+                            console.log("device.degreegoback " + device.degreegoback)
                             break
                         case "messages":
                             console.log("message "+ msg.message + "  message2 " + msg.message2)

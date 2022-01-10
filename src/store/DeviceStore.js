@@ -15,8 +15,12 @@ export default class DeviceStore {
         this._voiceCommand = false
         this._speech = ''
         this._lang = 'ru-RU'
+        this._degreegoback = 0
         makeAutoObservable(this)
     }
+
+    get degreegoback() {return this._degreegoback;}
+    setDegreegoback(value) {this._degreegoback = value;}
 
     get username() {return this._username;}
     setUsername(value) {this._username = value;}
@@ -52,11 +56,6 @@ export default class DeviceStore {
     setSpeech(value) {this._speech = value;}
 
 
-    get lang() {
-        return this._lang;
-    }
-
-    setLang(value) {
-        this._lang = value;
-    }
+    get lang() {return this._lang;}
+    setLang(value) {this._lang = value;}
 }

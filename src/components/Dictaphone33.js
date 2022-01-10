@@ -15,7 +15,7 @@ const Dictaphone33 = () => {
     const [voice, setVoice] = useState(true);
     const [face, setFace] = useState(false);
     const [accelState, setAccelState] = useState(1)
-    const [speedStateUD, setSpeedStateUD] = useState(0)
+    const [speedStateUD, setSpeedStateUD] = useState(device.degreegoback)
     const [speedStateLR, setSpeedStateLR] = useState(0)
     const [delayCommand, setDelayCommand] = useState(0)
 
@@ -24,6 +24,14 @@ const Dictaphone33 = () => {
     const timerControlLeft = useRef(null);
     const timerControlRight = useRef(null);
     const [languages, setLanguages] = useState('ru-RU')
+
+
+    useEffect(()=>{
+        const timer = setTimeout(() => {
+            setSpeedStateUD(device.degreegoback)
+        }, 1000);
+        return () => clearTimeout(timer);
+    },[device.degreegoback])
 
     useEffect(()=>{
         // var synth = window.speechSynthesis
@@ -54,8 +62,6 @@ const Dictaphone33 = () => {
         resetTranscript,
         browserSupportsSpeechRecognition
     } = useSpeechRecognition({commands});
-
-
 
     const startListening = () => SpeechRecognition.startListening({
         continuous: true,
@@ -104,9 +110,6 @@ const Dictaphone33 = () => {
     const speech = (text) => {
         let action = russian(text, voice)
         if(action != '') {
-
-            //speechVoice(action, languages)
-
             speak(action)
             if(action === 'голос включен'){setVoice(true)}
             if(action === 'голос выключен'){setVoice(false)}
@@ -140,12 +143,12 @@ const Dictaphone33 = () => {
     }
     const controlUp = () => {
         timerControlUp.current = setTimeout(() => {
-            UpDown(device.webSocket, -1 + device.speedUD/10, device.accel)
+            UpDown(device.webSocket, -1 + device.degreegoback/10, device.accel)
         }, device.delayCommand);
     }
     const controlDown = () => {
         timerControlDown.current = setTimeout(() => {
-            UpDown(device.webSocket, 1 - device.speedUD/10, device.accel)
+            UpDown(device.webSocket, 1 - device.degreegoback/10, device.accel)
         }, device.delayCommand);
     }
     const controlLeft = () => {
@@ -181,7 +184,7 @@ const Dictaphone33 = () => {
     }
     const speedUseUD = (speedUD) => {
         setSpeedStateUD(speedUD)
-        device.setSpeedUD(Number(speedUD))
+        //device.setSpeedUD(Number(speedUD))
         DegreeGoBack(device.webSocket, speedUD)
     }
     const speedUseLR = (speedLR) => {
@@ -279,8 +282,6 @@ const Dictaphone33 = () => {
             {/*{speaking ? <div className='circle-red'></div>  : <div className='circle-green'></div> }*/}
 
             {speaking ? <div className='circle-red'></div>  : <div className='circle-green'></div> }
-
-
         </div>
     );
 };
