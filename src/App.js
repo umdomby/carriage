@@ -13,7 +13,7 @@ const App = observer(() => {
             {/*<Speech/>*/}
             {/*<ReactSpeechKit/>*/}
 
-            <CameraFaceDetect/>
+            {/*<CameraFaceDetect/>*/}
             <WebSocketProject/>
             <Dictaphone33/>
         </div>
